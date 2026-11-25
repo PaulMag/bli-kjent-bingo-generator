@@ -10,7 +10,7 @@ df_utfordringer = pd.read_csv(URL_UTFORDRINGER)
 
 THEME = "tema"
 TASK = "oppgave"
-N_PAGES = 2
+N_PAGES = 60
 N_TASKS_PER_THEME = 5
 
 
@@ -67,6 +67,7 @@ def make_finn_personer_page():
     rows = "\n".join(rows_latex)
 
     return rf"""
+\AddToShipoutPictureBG*{{\includegraphics[width=\paperwidth,height=\paperheight]{{bingobakrunn-uten-sider.png}}}}
 \raggedright\Large\bfseries Finn noen som...\vspace{{0.1cm}}
 
 \begin{{tabular}}{{|c|c|c|c|c|}}
@@ -78,9 +79,10 @@ def make_finn_personer_page():
 
 def rules_page():
     return rf"""
+\AddToShipoutPictureBG*{{\includegraphics[width=\paperwidth,height=\paperheight]{{bingobakgrunn.png}}}}
 \centering\begin{{minipage}}{{0.60\textwidth}}
 \vspace{{2.5cm}}
-\begin{{center}}{{\Huge\bfseries Kartverket - Bli-kjent-bingo}}\end{{center}}
+\begin{{center}}{{\Huge\bfseries Bli-kjent-bingo - Julebord 2026}}\end{{center}}
 \vspace{{1.0cm}}
 Finn kolleger som matcher beskrivelsene i bingokortet og få de til å signere i ruten de matcher.
 Alle signaturer må være unike.\\
@@ -115,6 +117,7 @@ latex = rf"""\documentclass[a4paper, landscape]{{article}}
 \usepackage{{parskip}}
 \usepackage{{graphicx}}
 \usepackage[table]{{xcolor}}
+\usepackage{{eso-pic}}
 \renewcommand{{\familydefault}}{{\sfdefault}}
 \setlength{{\tabcolsep}}{{4pt}}
 \pagestyle{{empty}}
