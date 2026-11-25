@@ -46,6 +46,7 @@ def make_finn_personer_page():
     rows = '\n'.join(rows_latex)
 
     return rf"""
+\Large\bfseries Finn noen som...\\
 \begin{{tabular}}{{|c|c|c|c|c|}}
 \hline
 {rows}
@@ -55,22 +56,29 @@ def make_finn_personer_page():
 
 def rules_page():
     return rf"""
-\noindent\begin{{minipage}}{{0.25\textwidth}}
-\centering\includegraphics[height=2cm]{{kv-logo.png}}
-\end{{minipage}}
-\begin{{minipage}}{{0.50\textwidth}}
+\centering\begin{{minipage}}{{0.60\textwidth}}
+\vspace{{2.5cm}}
 \begin{{center}}{{\Huge\bfseries Kartverket - Bli-kjent-bingo}}\end{{center}}
-\end{{minipage}}
-\begin{{minipage}}{{0.25\textwidth}}
-\centering\includegraphics[height=2cm]{{georg.png}}
-\end{{minipage}}
+\vspace{{1.0cm}}
+Finn kolleger som matcher beskrivelsene i bingokortet og få de til å signere i ruten de matcher.
+Alle signaturer må være unike.
 
-Førstemann til å claime hver premie, men kan kun claime én premie.\\
-1. premie (30 poeng)\\
-2. premie (25 poeng)\\
-3. premie (20 poeng)\\
-4. premie (15 poeng)\\
-5. premie (10 poeng)\\
+Det er fem premier, men du kan kun vinne én gang.
+
+Når du har fullført et antall kolonner/rader,
+kan du velge å løse inn bingokortet for en premie,
+eller vente til du har nok til en høyere plassering.\\
+
+\emph{{Husk: Kun én premie per person. Du kan ikke få både 2. og 4. plass.}}\\
+
+1. plass (5 kolonner/rader)\\
+2. plass (4 kolonner/rader)\\
+3. plass (3 kolonner/rader)\\
+4. plass (2 kolonner/rader)\\
+5. plass (1 kolonner/rader)\\
+
+Når du får bingo, vis kortet til noen i julebordkomiteen.
+\end{{minipage}}
 """
 
 
