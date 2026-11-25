@@ -10,9 +10,8 @@ df_utfordringer = pd.read_csv(URL_UTFORDRINGER)
 
 THEME = "tema"
 TASK = "oppgave"
-N_PAGES = 10
-N_TASKS_PER_THEME_FINN_PERSONER = 3
-N_TASKS_PER_THEME_UTFORDRINGER = 2
+N_PAGES = 2
+N_TASKS_PER_THEME_FINN_PERSONER = 5
 
 
 def escape_latex(text):
@@ -26,7 +25,7 @@ def escape_latex(text):
 
 
 def make_page():
-    return make_finn_personer_page() + "\n\\newpage\n" + make_utfordringer_page()
+    return make_finn_personer_page() + "\n\\newpage\n" + rules_page()
 
 
 def make_finn_personer_page():
@@ -34,10 +33,16 @@ def make_finn_personer_page():
         [g.sample(n=min(N_TASKS_PER_THEME_FINN_PERSONER, len(g))) for _, g in df_finn_personer.groupby(THEME, sort=False)],
         ignore_index=True,
     )
-    rows = "\n".join(
-        rf"{escape_latex(row.tema)} & {escape_latex(row.oppgave)} & & \\ \hline"
-        for row in sampled.itertuples()
-    )
+    tasks = sampled['oppgave'].sample(n=min(25, len(sampled)), replace=len(sampled) < 25).tolist()
+    tasks = (tasks + [''] * 25)[:25]
+
+    rows_latex = []
+    for i in range(0, 25, 5):
+        cells = ' & '.join(rf'\parbox{{\dimexpr 0.18\textwidth-2\tabcolsep}} {{\centering\vspace{{0.3em}}{escape_latex(t)}\vspace{{0.3em}}}}' for t in tasks[i:i+5])
+        rows_latex.append(cells + r' \\ \hline')
+
+    rows = '\n'.join(rows_latex)
+
     return rf"""
 \noindent\begin{{minipage}}{{0.75\textwidth}}
 \begin{{center}}{{\Huge\bfseries Kartverket - Bli-kjent-bingo}}\end{{center}}
@@ -46,30 +51,16 @@ def make_finn_personer_page():
 \includegraphics[height=2cm]{{kv-logo.png}}
 \end{{minipage}}
 
-Ikke lov å studere eller fortelle om hverandre sine kort. Kun signere (den som signerer må vite hva hen signerer på).
-
 \begin{{center}}{{\Large\bfseries Finn personer (1 poeng per)}}\end{{center}}
-Må få signatur fra personen.\\
-Alle signaturer må være unike.
 
-\begin{{longtable}}{{|p{{0.12\textwidth}}|p{{0.40\textwidth}}|p{{0.22\textwidth}}|p{{0.22\textwidth}}|}}
+\begin{{tabular}}{{|c|c|c|c|c|}}
 \hline
-\textbf{{Tema}} & \textbf{{Oppgave}} & \textbf{{Signatur}} & \textbf{{Hva}} \\ \hline
-\endhead
 {rows}
-\end{{longtable}}
+\end{{tabular}}
 """
 
 
-def make_utfordringer_page():
-    sampled = pd.concat(
-        [g.sample(n=min(N_TASKS_PER_THEME_UTFORDRINGER, len(g))) for _, g in df_utfordringer.groupby(THEME, sort=False)],
-        ignore_index=True,
-    )
-    rows = "\n".join(
-        rf"{escape_latex(row.tema)} & {escape_latex(row.oppgave)} & \\ \hline"
-        for row in sampled.itertuples()
-    )
+def rules_page():
     return rf"""
 \noindent\begin{{minipage}}{{0.75\textwidth}}
 \begin{{center}}{{\Huge\bfseries Kartverket - Bli-kjent-bingo}}\end{{center}}
@@ -86,20 +77,12 @@ Førstemann til å claime hver premie, men kan kun claime én premie.\\
 5. premie (10 poeng)\\
 
 \begin{{center}}{{\Large\bfseries Utfordringer (2 poeng per)}}\end{{center}}
-Ètt av vitnene til utfordingene må signere. Disse signaturene trenger ikke være unike.
-
-\begin{{longtable}}{{|p{{0.12\textwidth}}|p{{0.60\textwidth}}|p{{0.22\textwidth}}|}}
-\hline
-\textbf{{Tema}} & \textbf{{Oppgave}} & \textbf{{Signatur}} \\ \hline
-\endhead
-{rows}
-\end{{longtable}}
 """
 
 
 pages = "\n\\newpage\n".join(make_page() for _ in range(N_PAGES))
 
-latex = rf"""\documentclass[a4paper,landscape]{{article}}
+latex = rf"""\documentclass[a4paper, landscape]{{article}}
 \usepackage[utf8]{{inputenc}}
 \usepackage[T1]{{fontenc}}
 \usepackage[norsk]{{babel}}
